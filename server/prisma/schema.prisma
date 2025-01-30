@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int            @id @default(autoincrement())
+  username     String         @unique
+  password     String
+  email        String         @unique
+  role         UserRole       @default(USER)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  reports      Report[]       // one-to-many relationship with Report
+  passwordResets PasswordReset[] // one-to-many relationship with PasswordReset
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  reports   Report[]   // one-to-many relationship with Report
+  images    Image[]    // one-to-many relationship with Image
+}
+
+model Image {
+  id        Int        @id @default(autoincrement())
+  url       String
+  category  Category   @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Report {
+  id          Int        @id @default(autoincrement())
+  title       String
+  content     String
+  category    Category   @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  user        User       @relation(fields: [userId], references: [id])
+  userId      Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  results     Result[]   // one-to-many relationship with Result
+}
+
+model Result {
+  id          Int        @id @default(autoincrement())
+  resultData  String     // Can be JSON or string format
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  report      Report     @relation(fields: [reportId], references: [id])
+  reportId    Int
+}
+
+model PasswordReset {
+  id          Int        @id @default(autoincrement())
+  user        User       @relation(fields: [userId], references: [id])
+  userId      Int
+  token       String
+  createdAt   DateTime   @default(now())
+  expiresAt   DateTime
+}
