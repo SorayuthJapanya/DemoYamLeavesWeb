@@ -1,10 +1,9 @@
 import React from 'react'
+import FormDashboard from '../../components/admin/FormDashboard'
 
 const dashboard = () => {
   return (
-    <div>
-      Dashboard
-    </div>
+    <FormDashboard/>
   )
 }
 
