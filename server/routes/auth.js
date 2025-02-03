@@ -9,6 +9,9 @@ const { register,
         logout 
 } = require('../controllers/auth')
 
+// import middleware 
+const { authCheck, adminCheck } = require('../middleware/authCheck')
+
 // @POST /api/register
 router.post('/register', register)
 
@@ -16,10 +19,10 @@ router.post('/register', register)
 router.post('/login', login)
 
 // @POST /api/current-user
-router.post('/current-user', currentUser)
+router.post('/current-user', authCheck, currentUser)
 
 // @POST /api/current-admin
-router.post('/current-admin', currentAdmin)
+router.post('/current-admin', authCheck, adminCheck, currentAdmin  )
 
 // @POST /api/reset-password
 router.post('/reset-password', resetPassword)

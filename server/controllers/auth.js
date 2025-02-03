@@ -102,7 +102,15 @@ exports.login = async (req, res) => {
 // CurrentUser Function
 exports.currentUser = async (req, res) => {
     try {
-        res.status(200).json({ message: "Current user data" })
+        const user = await prisma.user.findFirst( {
+            where: { username: req.user.username },
+            select: {
+                id: true,
+                username: true,
+                role: true
+            }
+        } )
+        res.json({ user })
     } catch (error) {
         console.error(error)
         res.status(500).json({ error: "Internal Server Error" })
